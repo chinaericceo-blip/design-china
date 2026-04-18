@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GUNAIS · 谷奈斯空间设计</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Josefin+Sans:wght@300;400;500;600&family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #f8f6f2;
+      --gray-100: #f0ede8;
+      --gray-200: #e0ddd8;
+      --gray-400: #9e9b96;
+      --gray-600: #5c5a56;
+      --gold: #c9a96e;
+      --gold-light: #e8d4a8;
+      --font-display: 'Cinzel', serif;
+      --font-body: 'Josefin Sans', sans-serif;
+      --font-cn: 'Noto Serif SC', serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── Custom Cursor ── */
+    .cursor {
+      width: 8px; height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.1s ease;
+      transform: translate(-50%, -50%);
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(201,169,110,0.5);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: all 0.2s ease;
+    }
+    body:hover .cursor-ring { opacity: 1; }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 2px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); }
+
+    /* ── Navigation ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 24px 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: all 0.4s ease;
+    }
+    nav.scrolled {
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+      padding: 16px 60px;
+      border-bottom: 1px solid rgba(201,169,110,0.15);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 18px;
+      letter-spacing: 0.3em;
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-links {
+      display: flex; gap: 40px; list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--font-body);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gray-400);
+      text-decoration: none;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 0; right: 0;
+      height: 1px; background: var(--gold);
+      transform: scaleX(0); transform-origin: right;
+      transition: transform 0.3s ease;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+    .nav-lang {
+      font-size: 11px; letter-spacing: 0.15em;
+      color: var(--gray-600); border: 1px solid var(--gray-600);
+      padding: 6px 14px; text-decoration: none;
+      transition: all 0.3s ease; text-transform: uppercase;
+    }
+    .nav-lang:hover { color: var(--gold); border-color: var(--gold); }
+
+    /* ── Hero ── */
+    #hero {
+      height: 100vh; min-height: 700px;
+      position: relative; overflow: hidden;
+      display: flex; align-items: flex-end;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, #0d0d0d 0%, #1a1510 40%, #0a0a0a 100%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; opacity: 0.04;
+      background-image:
+        linear-gradient(var(--gold) 1px, transparent 1px),
+        linear-gradient(90deg, var(--gold) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+    .hero-accent {
+      position: absolute; top: 0; right: 0;
+      width: 45%; height: 100%;
+      overflow: hidden;
+    }
+    .hero-accent::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, transparent 30%, rgba(201,169,110,0.06) 100%);
+    }
+    .hero-accent-line {
+      position: absolute; top: 15%; left: -1px;
+      width: 1px; height: 70%;
+      background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+      opacity: 0.4;
+    }
+    /* Sketch-like background text */
+    .hero-bg-text {
+      position: absolute; right: 5%; top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--font-display);
+      font-size: clamp(80px, 12vw, 180px);
+      letter-spacing: -0.02em;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(201,169,110,0.08);
+      user-select: none; pointer-events: none;
+      line-height: 0.9;
+    }
+    .hero-content {
+      position: relative; z-index: 10;
+      padding: 0 60px 80px;
+      max-width: 760px;
+    }
+    .hero-eyebrow {
+      font-size: 11px; letter-spacing: 0.35em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 28px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .hero-eyebrow::before {
+      content: ''; width: 40px; height: 1px; background: var(--gold); flex-shrink: 0;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(38px, 6vw, 80px);
+      line-height: 1.08;
+      letter-spacing: 0.02em;
+      font-weight: 400;
+      margin-bottom: 28px;
+    }
+    .hero-title em {
+      font-style: italic; color: var(--gold);
+      font-weight: 300;
+    }
+    .hero-subtitle {
+      font-family: var(--font-body);
+      font-size: 14px; line-height: 1.9;
+      color: var(--gray-400); max-width: 480px;
+      letter-spacing: 0.05em;
+      margin-bottom: 48px;
+    }
+    .hero-cta {
+      display: flex; gap: 20px; align-items: center;
+    }
+    .btn-primary {
+      font-family: var(--font-body);
+      font-size: 11px; letter-spacing: 0.25em;
+      text-transform: uppercase;
+      background: var(--gold); color: var(--black);
+      padding: 16px 36px; border: none;
+      text-decoration: none; display: inline-block;
+      transition: all 0.3s ease; cursor: none;
+      font-weight: 600;
+    }
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+    .btn-ghost {
+      font-family: var(--font-body);
+      font-size: 11px; letter-spacing: 0.25em;
+      text-transform: uppercase;
+      background: transparent; color: var(--white);
+      padding: 16px 36px; border: 1px solid rgba(255,255,255,0.2);
+      text-decoration: none; display: inline-block;
+      transition: all 0.3s ease; cursor: none;
+    }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+    .hero-scroll {
+      position: absolute; bottom: 40px; right: 60px;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      font-size: 10px; letter-spacing: 0.3em; color: var(--gray-600);
+      text-transform: uppercase;
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    .hero-scroll::after {
+      content: '';
+      width: 1px; height: 60px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+    .hero-stats {
+      position: absolute; bottom: 80px; right: 60px;
+      display: flex; gap: 48px;
+    }
+    .stat-item { text-align: right; }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 32px; font-weight: 400;
+      color: var(--gold); line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 9px; letter-spacing: 0.25em;
+      text-transform: uppercase; color: var(--gray-600);
+    }
+
+    /* ── Marquee ── */
+    .marquee-wrap {
+      overflow: hidden; border-top: 1px solid rgba(201,169,110,0.12);
+      border-bottom: 1px solid rgba(201,169,110,0.12);
+      padding: 14px 0; background: rgba(201,169,110,0.03);
+    }
+    .marquee-track {
+      display: flex; gap: 0;
+      animation: marquee 30s linear infinite;
+      white-space: nowrap;
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+    .marquee-item {
+      font-family: var(--font-display);
+      font-size: 11px; letter-spacing: 0.3em;
+      text-transform: uppercase; color: var(--gray-600);
+      padding: 0 40px; flex-shrink: 0;
+      display: flex; align-items: center; gap: 40px;
+    }
+    .marquee-dot {
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--gold); flex-shrink: 0;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ── Section Base ── */
+    section { padding: 120px 60px; }
+    .section-label {
+      font-size: 10px; letter-spacing: 0.4em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .section-label::before {
+      content: ''; width: 32px; height: 1px; background: var(--gold);
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 52px);
+      font-weight: 400; line-height: 1.1;
+      letter-spacing: 0.03em;
+    }
+    .section-divider {
+      width: 60px; height: 1px;
+      background: var(--gold); margin: 32px 0;
+    }
+    .section-desc {
+      font-size: 14px; line-height: 1.9;
+      color: var(--gray-400); max-width: 560px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── About ── */
+    #about {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+      background: var(--black);
+    }
+    .about-visual {
+      position: relative;
+    }
+    .about-img-frame {
+      width: 100%; padding-bottom: 120%;
+      position: relative; overflow: hidden;
+      background: #111;
+    }
+    .about-img-frame img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover;
+      filter: grayscale(20%) contrast(1.05);
+      transition: transform 0.8s ease;
+    }
+    .about-img-frame:hover img { transform: scale(1.04); }
+    .about-img-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 40%;
+      background: linear-gradient(to top, rgba(10,10,10,0.8), transparent);
+    }
+    .about-tag {
+      position: absolute; bottom: -20px; right: -20px;
+      background: var(--gold); color: var(--black);
+      font-family: var(--font-display);
+      font-size: 11px; letter-spacing: 0.2em;
+      padding: 20px 28px;
+    }
+    .about-content { padding: 20px 0; }
+    .about-quote {
+      font-family: var(--font-cn);
+      font-size: clamp(20px, 2.5vw, 30px);
+      line-height: 1.6; font-weight: 300;
+      color: var(--white); margin: 28px 0 32px;
+      letter-spacing: 0.05em;
+    }
+    .about-quote em { color: var(--gold); font-style: normal; }
+    .about-stats-row {
+      display: flex; gap: 40px; margin-top: 48px;
+      padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .about-stat { flex: 1; }
+    .about-stat-num {
+      font-family: var(--font-display);
+      font-size: 36px; color: var(--gold);
+      line-height: 1; margin-bottom: 6px;
+    }
+    .about-stat-label {
+      font-size: 10px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--gray-600);
+    }
+
+    /* ── Services ── */
+    #services { background: #080808; }
+    .services-header {
+      display: flex; justify-content: space-between;
+      align-items: flex-end; margin-bottom: 72px;
+    }
+    .services-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+    .service-card {
+      position: relative; padding: 40px 32px 48px;
+      background: #0f0f0f; overflow: hidden;
+      transition: background 0.4s ease;
+      cursor: none;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      opacity: 0; transition: opacity 0.4s ease;
+    }
+    .service-card:hover { background: #141410; }
+    .service-card:hover::before { opacity: 1; }
+    .service-num {
+      font-family: var(--font-display);
+      font-size: 13px; letter-spacing: 0.1em;
+      color: var(--gold); opacity: 0.6;
+      margin-bottom: 32px;
+    }
+    .service-icon {
+      width: 48px; height: 48px; margin-bottom: 24px;
+      opacity: 0.7; transition: opacity 0.3s;
+    }
+    .service-card:hover .service-icon { opacity: 1; }
+    .service-icon svg { width: 100%; height: 100%; }
+    .service-name {
+      font-family: var(--font-display);
+      font-size: 14px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--white);
+      margin-bottom: 16px; line-height: 1.3;
+    }
+    .service-cn {
+      font-family: var(--font-cn);
+      font-size: 12px; color: var(--gray-600);
+      margin-bottom: 20px;
+    }
+    .service-desc {
+      font-size: 12px; line-height: 1.8;
+      color: var(--gray-600); letter-spacing: 0.03em;
+    }
+    .service-arrow {
+      position: absolute; bottom: 32px; right: 32px;
+      width: 32px; height: 32px;
+      border: 1px solid rgba(201,169,110,0.2);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transform: translateX(-8px);
+      transition: all 0.3s ease;
+    }
+    .service-card:hover .service-arrow {
+      opacity: 1; transform: translateX(0);
+    }
+
+    /* ── Portfolio ── */
+    #portfolio { background: var(--black); }
+    .portfolio-header {
+      display: flex; justify-content: space-between;
+      align-items: flex-end; margin-bottom: 64px;
+    }
+    .portfolio-filter {
+      display: flex; gap: 8px;
+    }
+    .filter-btn {
+      font-family: var(--font-body);
+      font-size: 10px; letter-spacing: 0.2em;
+      text-transform: uppercase; background: none;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--gray-400); padding: 8px 20px;
+      cursor: none; transition: all 0.3s ease;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      border-color: var(--gold); color: var(--gold);
+    }
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 3px;
+    }
+    .portfolio-item {
+      position: relative; overflow: hidden;
+      cursor: none;
+    }
+    .portfolio-item:first-child {
+      grid-row: 1 / 3;
+    }
+    .portfolio-item-img {
+      width: 100%;
+      padding-bottom: 80%;
+      background: #111;
+      position: relative; overflow: hidden;
+    }
+    .portfolio-item:first-child .portfolio-item-img {
+      padding-bottom: 0;
+      height: 100%;
+      min-height: 600px;
+    }
+    .portfolio-item-img img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover;
+      filter: grayscale(15%);
+      transition: transform 0.7s ease, filter 0.5s ease;
+    }
+    .portfolio-item:hover .portfolio-item-img img {
+      transform: scale(1.06);
+      filter: grayscale(0%);
+    }
+    .portfolio-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,10,10,0.85) 0%, transparent 50%);
+      display: flex; flex-direction: column;
+      justify-content: flex-end; padding: 32px;
+      opacity: 0; transition: opacity 0.4s ease;
+    }
+    .portfolio-item:hover .portfolio-overlay { opacity: 1; }
+    .portfolio-cat {
+      font-size: 9px; letter-spacing: 0.3em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .portfolio-name {
+      font-family: var(--font-display);
+      font-size: 18px; letter-spacing: 0.08em;
+      color: var(--white); margin-bottom: 6px;
+    }
+    .portfolio-location {
+      font-size: 11px; letter-spacing: 0.12em;
+      color: var(--gray-400);
+    }
+    .portfolio-always {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 20px 24px;
+      background: linear-gradient(to top, rgba(10,10,10,0.75), transparent);
+    }
+    .portfolio-always .portfolio-name {
+      font-size: 14px;
+    }
+
+    /* ── Philosophy ── */
+    #philosophy {
+      background: #060606;
+      text-align: center; padding: 140px 60px;
+      position: relative; overflow: hidden;
+    }
+    .philosophy-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, rgba(201,169,110,0.04) 0%, transparent 70%);
+    }
+    .philosophy-tagline {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 6vw, 88px);
+      font-weight: 400; line-height: 1.15;
+      letter-spacing: 0.04em;
+      max-width: 900px; margin: 0 auto 32px;
+    }
+    .philosophy-tagline span {
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(201,169,110,0.5);
+    }
+    .philosophy-tagline .gold { color: var(--gold); -webkit-text-stroke: 0; }
+    .philosophy-desc {
+      font-size: 14px; line-height: 1.9;
+      color: var(--gray-400); max-width: 520px;
+      margin: 0 auto 56px; letter-spacing: 0.05em;
+    }
+    .philosophy-words {
+      display: flex; gap: 0; justify-content: center;
+      overflow: hidden; margin-top: 80px;
+    }
+    .phi-word {
+      font-family: var(--font-display);
+      font-size: clamp(60px, 10vw, 140px);
+      font-weight: 400; line-height: 1;
+      letter-spacing: -0.02em;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(201,169,110,0.1);
+      user-select: none;
+      padding: 0 20px;
+      transition: -webkit-text-stroke 0.5s ease, color 0.5s ease;
+    }
+    .phi-word:hover {
+      color: rgba(201,169,110,0.08);
+      -webkit-text-stroke: 1px rgba(201,169,110,0.4);
+    }
+
+    /* ── Awards ── */
+    #awards { background: var(--black); }
+    .awards-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1px; margin-top: 64px;
+      border: 1px solid rgba(201,169,110,0.1);
+    }
+    .award-item {
+      padding: 48px 36px;
+      border-right: 1px solid rgba(201,169,110,0.1);
+      text-align: center;
+      transition: background 0.3s ease;
+    }
+    .award-item:last-child { border-right: none; }
+    .award-item:hover { background: rgba(201,169,110,0.03); }
+    .award-icon {
+      font-family: var(--font-display);
+      font-size: 40px; color: var(--gold);
+      opacity: 0.4; margin-bottom: 20px;
+      line-height: 1;
+    }
+    .award-year {
+      font-size: 10px; letter-spacing: 0.3em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .award-title {
+      font-family: var(--font-display);
+      font-size: 13px; letter-spacing: 0.12em;
+      color: var(--white); line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    .award-org {
+      font-size: 11px; letter-spacing: 0.1em;
+      color: var(--gray-600);
+    }
+
+    /* ── News ── */
+    #news { background: #080808; }
+    .news-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 48px; margin-top: 64px;
+    }
+    .news-card { cursor: none; }
+    .news-img {
+      width: 100%; padding-bottom: 62%;
+      background: #111; position: relative; overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .news-img img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover;
+      filter: grayscale(20%);
+      transition: transform 0.6s ease, filter 0.4s ease;
+    }
+    .news-card:hover .news-img img {
+      transform: scale(1.05); filter: grayscale(0%);
+    }
+    .news-cat {
+      font-size: 9px; letter-spacing: 0.3em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 10px;
+    }
+    .news-title {
+      font-family: var(--font-display);
+      font-size: 16px; letter-spacing: 0.08em;
+      color: var(--white); line-height: 1.4;
+      margin-bottom: 12px;
+    }
+    .news-date {
+      font-size: 10px; letter-spacing: 0.15em;
+      color: var(--gray-600);
+    }
+    .news-divider {
+      width: 32px; height: 1px; background: var(--gold);
+      margin: 16px 0; opacity: 0.4;
+      transition: width 0.3s ease, opacity 0.3s ease;
+    }
+    .news-card:hover .news-divider { width: 64px; opacity: 1; }
+
+    /* ── Contact / Footer ── */
+    #contact {
+      background: #030303;
+      padding: 100px 60px 0;
+    }
+    .contact-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 100px; padding-bottom: 80px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .contact-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 52px);
+      font-weight: 400; line-height: 1.15;
+      letter-spacing: 0.04em; margin-top: 24px;
+    }
+    .contact-subtitle {
+      font-size: 14px; line-height: 1.8;
+      color: var(--gray-400); max-width: 400px;
+      margin: 24px 0 48px; letter-spacing: 0.04em;
+    }
+    .contact-form { display: flex; flex-direction: column; gap: 20px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; }
+    .form-group label {
+      font-size: 9px; letter-spacing: 0.3em;
+      text-transform: uppercase; color: var(--gray-600);
+      margin-bottom: 8px;
+    }
+    .form-group input, .form-group textarea, .form-group select {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--white); padding: 14px 16px;
+      font-family: var(--font-body); font-size: 13px;
+      letter-spacing: 0.05em; outline: none;
+      transition: border-color 0.3s ease;
+      resize: none;
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      border-color: var(--gold);
+    }
+    .form-group select option { background: #111; }
+    .form-group textarea { min-height: 120px; }
+    .form-submit {
+      margin-top: 8px;
+    }
+    .footer-bar {
+      padding: 32px 0;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 14px; letter-spacing: 0.3em;
+      color: var(--gray-600);
+    }
+    .footer-logo span { color: var(--gold); }
+    .footer-links {
+      display: flex; gap: 32px; list-style: none;
+    }
+    .footer-links a {
+      font-size: 10px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--gray-600);
+      text-decoration: none; transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-copy {
+      font-size: 10px; letter-spacing: 0.12em;
+      color: var(--gray-600);
+    }
+    .contact-offices {
+      margin-top: 48px; display: flex; flex-direction: column; gap: 20px;
+    }
+    .office-item {
+      padding: 20px 24px;
+      border: 1px solid rgba(255,255,255,0.06);
+      display: flex; justify-content: space-between; align-items: center;
+      transition: border-color 0.3s ease;
+    }
+    .office-item:hover { border-color: rgba(201,169,110,0.25); }
+    .office-city {
+      font-family: var(--font-display);
+      font-size: 12px; letter-spacing: 0.2em;
+      color: var(--white); text-transform: uppercase;
+    }
+    .office-address {
+      font-size: 11px; letter-spacing: 0.08em;
+      color: var(--gray-600); margin-top: 4px;
+    }
+    .office-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--gold); flex-shrink: 0;
+    }
+
+    /* ── Reveal animation ── */
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Mobile Nav Toggle ── */
+    .nav-hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: none; padding: 4px;
+    }
+    .nav-hamburger span {
+      width: 24px; height: 1px;
+      background: var(--white); transition: all 0.3s ease;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      section { padding: 80px 40px; }
+      nav { padding: 20px 40px; }
+      nav.scrolled { padding: 14px 40px; }
+      .hero-content { padding: 0 40px 80px; }
+      .about-visual { display: none; }
+      #about { grid-template-columns: 1fr; gap: 0; }
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .portfolio-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+      }
+      .portfolio-item:first-child { grid-row: auto; }
+      .portfolio-item:first-child .portfolio-item-img { min-height: 300px; padding-bottom: 80%; }
+      .awards-grid { grid-template-columns: repeat(2, 1fr); }
+      .news-grid { grid-template-columns: repeat(2, 1fr); }
+      .contact-inner { grid-template-columns: 1fr; gap: 60px; }
+      nav .nav-links, nav .nav-lang { display: none; }
+      .nav-hamburger { display: flex; }
+      .hero-stats { display: none; }
+    }
+
+    @media (max-width: 640px) {
+      section { padding: 60px 24px; }
+      nav { padding: 16px 24px; }
+      .services-grid { grid-template-columns: 1fr; }
+      .portfolio-grid { grid-template-columns: 1fr; }
+      .awards-grid { grid-template-columns: 1fr 1fr; }
+      .news-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .footer-bar { flex-direction: column; gap: 16px; text-align: center; }
+      .footer-links { gap: 20px; flex-wrap: wrap; justify-content: center; }
+      .philosophy-words { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom Cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- Navigation -->
+  <nav id="mainNav">
+    <a href="#" class="nav-logo">GUNAIS<span>·</span></a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#portfolio">Portfolio</a></li>
+      <li><a href="#philosophy">Philosophy</a></li>
+      <li><a href="#news">News</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#" class="nav-lang">中文</a>
+    <div class="nav-hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-accent">
+      <div class="hero-accent-line"></div>
+    </div>
+    <div class="hero-bg-text">空<br>间</div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Shanghai · Commercial Space Design</p>
+      <h1 class="hero-title">
+        It started from<br>
+        a <em>sketch</em>…
+      </h1>
+      <p class="hero-subtitle">
+        精细化设计，创造高品质空间。<br>
+        谷奈斯将理性美学与场景体验融为一体，<br>
+        为商业空间注入无限可能。
+      </p>
+      <div class="hero-cta">
+        <a href="#portfolio" class="btn-primary">View Portfolio</a>
+        <a href="#contact" class="btn-ghost">Connect With Us</a>
+      </div>
+    </div>
+    <div class="hero-scroll">Scroll</div>
+  </section>
+
+  <!-- Marquee -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <div class="marquee-item">Commercial Space<div class="marquee-dot"></div></div>
+      <div class="marquee-item">深化设计<div class="marquee-dot"></div></div>
+      <div class="marquee-item">Hotel & Hospitality<div class="marquee-dot"></div></div>
+      <div class="marquee-item">EPC Design Management<div class="marquee-dot"></div></div>
+      <div class="marquee-item">Office Space<div class="marquee-dot"></div></div>
+      <div class="marquee-item">Exhibition Design<div class="marquee-dot"></div></div>
+      <div class="marquee-item">Brand Identity<div class="marquee-dot"></div></div>
+      <div class="marquee-item">空间即体验<div class="marquee-dot"></div></div>
+      <!-- Duplicate for seamless loop -->
+      <div class="marquee-item">Commercial Space<div class="marquee-dot"></div></div>
+      <div class="marquee-item">深化设计<div class="marquee-dot"></div></div>
+      <div class="marquee-item">Hotel & Hospitality<div class="marquee-dot"></div></div>
+      <div class="marquee-item">EPC Design Management<div class="marquee-dot"></div></div>
+      <div class="marquee-item">Office Space<div class="marquee-dot"></div></div>
+      <div class="marquee-item">Exhibition Design<div class="marquee-dot"></div></div>
+      <div class="marquee-item">Brand Identity<div class="marquee-dot"></div></div>
+      <div class="marquee-item">空间即体验<div class="marquee-dot"></div></div>
+    </div>
+  </div>
+
+  <!-- About -->
+  <section id="about">
+    <div class="about-visual">
+      <div class="about-img-frame">
+        <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80" alt="Gunais Design Space" />
+        <div class="about-img-overlay"></div>
+      </div>
+      <div class="about-tag">Est. 2024</div>
+    </div>
+    <div class="about-content reveal">
+      <p class="section-label">About Gunais</p>
+      <h2 class="section-title">设计驱动<br>品牌发展</h2>
+      <div class="section-divider"></div>
+      <p class="about-quote">
+        理性构建空间框架，<br>
+        <em>克制</em>回归设计本质，<br>
+        融合商业价值与人文关怀。
+      </p>
+      <p class="section-desc">
+        谷奈斯空间设计成立于2024年，扎根上海，专注商业空间设计与EPC设计管理。创始人邵阳拥有15年以上行业经验，深耕商业综合体、办公空间、酒店会展及展览展示领域，代表作品涵盖上海虹桥机场、恒隆广场等标志性项目。
+      </p>
+      <div class="about-stats-row">
+        <div class="about-stat">
+          <div class="about-stat-num">15<span style="font-size:18px;color:var(--gold)">+</span></div>
+          <div class="about-stat-label">Years Experience</div>
+        </div>
+        <div class="about-stat">
+          <div class="about-stat-num">120<span style="font-size:18px;color:var(--gold)">+</span></div>
+          <div class="about-stat-label">Clients Served</div>
+        </div>
+        <div class="about-stat">
+          <div class="about-stat-num">100<span style="font-size:18px;color:var(--gold)">%</span></div>
+          <div class="about-stat-label">Client Satisfaction</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section id="services">
+    <div class="services-header reveal">
+      <div>
+        <p class="section-label">What We Do</p>
+        <h2 class="section-title">核心服务</h2>
+      </div>
+      <a href="#contact" class="btn-ghost">All Services</a>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-num">01</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="6" width="36" height="36" rx="1" stroke="#c9a96e" stroke-width="1.5"/>
+            <path d="M6 18h36M18 6v36" stroke="#c9a96e" stroke-width="1.5"/>
+            <circle cx="12" cy="12" r="2" fill="#c9a96e" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="service-name">Commercial Space<br>Design</div>
+        <div class="service-cn">商业空间设计</div>
+        <p class="service-desc">商业综合体、购物中心、品牌专柜的全流程室内设计服务，从方案概念到深化落地。</p>
+        <div class="service-arrow">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="#c9a96e" stroke-width="1.2"/></svg>
+        </div>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-num">02</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 40V16l16-8 16 8v24H8z" stroke="#c9a96e" stroke-width="1.5"/>
+            <path d="M18 40v-12h12v12" stroke="#c9a96e" stroke-width="1.5"/>
+            <path d="M24 8v32" stroke="#c9a96e" stroke-width="1" opacity="0.4" stroke-dasharray="2 3"/>
+          </svg>
+        </div>
+        <div class="service-name">Office & Corporate<br>Space</div>
+        <div class="service-cn">办公空间设计</div>
+        <p class="service-desc">为企业打造高效、有格调的工作环境，将品牌文化融入空间语言与体验动线之中。</p>
+        <div class="service-arrow">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="#c9a96e" stroke-width="1.2"/></svg>
+        </div>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-num">03</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="24" r="16" stroke="#c9a96e" stroke-width="1.5"/>
+            <circle cx="24" cy="24" r="6" stroke="#c9a96e" stroke-width="1.5"/>
+            <path d="M24 8v4M24 36v4M8 24h4M36 24h4" stroke="#c9a96e" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="service-name">Hotel & Exhibition<br>Design</div>
+        <div class="service-cn">酒店会展设计</div>
+        <p class="service-desc">以叙事性空间策略打造沉浸式住宿与会展体验，赋予品牌专属的场所精神。</p>
+        <div class="service-arrow">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="#c9a96e" stroke-width="1.2"/></svg>
+        </div>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-num">04</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 40L24 8l16 32H8z" stroke="#c9a96e" stroke-width="1.5"/>
+            <path d="M15.5 28h17M20 34h8" stroke="#c9a96e" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="service-name">Construction Drawing<br>Deepening</div>
+        <div class="service-cn">施工图深化设计</div>
+        <p class="service-desc">专业施工图团队，精准翻译设计意图，确保设计细节在施工端完整落地实现。</p>
+        <div class="service-arrow">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="#c9a96e" stroke-width="1.2"/></svg>
+        </div>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-num">05</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="10" width="32" height="28" rx="1" stroke="#c9a96e" stroke-width="1.5"/>
+            <path d="M8 20h32M20 10v28" stroke="#c9a96e" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="service-name">EPC Design<br>Management</div>
+        <div class="service-cn">EPC设计管理</div>
+        <p class="service-desc">统筹设计、采购、施工全链路，提供专业的工程总包设计管理顾问服务。</p>
+        <div class="service-arrow">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="#c9a96e" stroke-width="1.2"/></svg>
+        </div>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-num">06</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M24 6C14.06 6 6 14.06 6 24s8.06 18 18 18 18-8.06 18-18S33.94 6 24 6z" stroke="#c9a96e" stroke-width="1.5"/>
+            <path d="M24 14v10l7 4" stroke="#c9a96e" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="service-name">Brand Space<br>Consulting</div>
+        <div class="service-cn">品牌空间顾问</div>
+        <p class="service-desc">协助品牌建立空间视觉体系，将品牌价值与理念转化为可感知的空间叙事语言。</p>
+        <div class="service-arrow">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="#c9a96e" stroke-width="1.2"/></svg>
+        </div>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-num">07</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 38L24 10l14 28H10z" stroke="#c9a96e" stroke-width="1.5"/>
+            <line x1="24" y1="10" x2="24" y2="38" stroke="#c9a96e" stroke-width="1" opacity="0.4"/>
+            <line x1="10" y1="28" x2="38" y2="28" stroke="#c9a96e" stroke-width="1" opacity="0.4"/>
+          </svg>
+        </div>
+        <div class="service-name">Lighting & MEP<br>Integration</div>
+        <div class="service-cn">灯光与机电统筹</div>
+        <p class="service-desc">光环境设计与机电系统的协同规划，从空间叙事出发实现功能与氛围的精准融合。</p>
+        <div class="service-arrow">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="#c9a96e" stroke-width="1.2"/></svg>
+        </div>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-num">08</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="24" r="14" stroke="#c9a96e" stroke-width="1.5"/>
+            <path d="M24 10V24l8 8" stroke="#c9a96e" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="service-name">On-Site Technical<br>Support</div>
+        <div class="service-cn">现场技术支持</div>
+        <p class="service-desc">经验丰富的设计师团队全程跟进现场，提供精准的技术指导与设计落地把控。</p>
+        <div class="service-arrow">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="#c9a96e" stroke-width="1.2"/></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Portfolio -->
+  <section id="portfolio">
+    <div class="portfolio-header reveal">
+      <div>
+        <p class="section-label">Selected Works</p>
+        <h2 class="section-title">代表项目</h2>
+      </div>
+      <div class="portfolio-filter">
+        <button class="filter-btn active">All</button>
+        <button class="filter-btn">Commercial</button>
+        <button class="filter-btn">Office</button>
+        <button class="filter-btn">Exhibition</button>
+      </div>
+    </div>
+    <div class="portfolio-grid">
+      <div class="portfolio-item">
+        <div class="portfolio-item-img">
+          <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=900&q=80" alt="上海虹桥机场" />
+          <div class="portfolio-overlay">
+            <div class="portfolio-cat">Airport · Commercial</div>
+            <div class="portfolio-name">上海虹桥机场航站楼</div>
+            <div class="portfolio-location">Shanghai, China</div>
+          </div>
+        </div>
+      </div>
+      <div class="portfolio-item">
+        <div class="portfolio-item-img">
+          <img src="https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=600&q=80" alt="沈阳恒隆广场" />
+          <div class="portfolio-overlay">
+            <div class="portfolio-cat">Retail · Luxury</div>
+            <div class="portfolio-name">沈阳恒隆广场</div>
+            <div class="portfolio-location">Shenyang, China</div>
+          </div>
+        </div>
+      </div>
+      <div class="portfolio-item">
+        <div class="portfolio-item-img">
+          <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80" alt="天津恒隆广场" />
+          <div class="portfolio-overlay">
+            <div class="portfolio-cat">Office · Corporate</div>
+            <div class="portfolio-name">天津恒隆广场</div>
+            <div class="portfolio-location">Tianjin, China</div>
+          </div>
+        </div>
+      </div>
+      <div class="portfolio-item">
+        <div class="portfolio-item-img">
+          <img src="https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=600&q=80" alt="来福士广场" />
+          <div class="portfolio-overlay">
+            <div class="portfolio-cat">Hotel · Hospitality</div>
+            <div class="portfolio-name">来福士广场</div>
+            <div class="portfolio-location">Shanghai, China</div>
+          </div>
+        </div>
+      </div>
+      <div class="portfolio-item">
+        <div class="portfolio-item-img">
+          <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="嘉善古镇修缮" />
+          <div class="portfolio-overlay">
+            <div class="portfolio-cat">Heritage · Restoration</div>
+            <div class="portfolio-name">嘉善古镇修缮</div>
+            <div class="portfolio-location">Jiashandao, China</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top: 56px;">
+      <a href="#contact" class="btn-ghost">View All Projects</a>
+    </div>
+  </section>
+
+  <!-- Philosophy -->
+  <section id="philosophy">
+    <div class="philosophy-bg"></div>
+    <p class="section-label" style="justify-content:center;">Our Philosophy</p>
+    <h2 class="philosophy-tagline reveal">
+      <span>Space</span> is the<br>
+      <span class="gold">Ultimate</span><br>
+      <span>Experience</span>
+    </h2>
+    <p class="philosophy-desc reveal">
+      我们相信，每一个空间都是一段叙事——<br>
+      关于品牌、关于人，关于那一刻无法言说的情感共鸣。
+    </p>
+    <a href="#about" class="btn-primary">Our Story</a>
+    <div class="philosophy-words">
+      <div class="phi-word">理性</div>
+      <div class="phi-word">克制</div>
+      <div class="phi-word">融合</div>
+      <div class="phi-word">体验</div>
+    </div>
+  </section>
+
+  <!-- Awards -->
+  <section id="awards">
+    <div class="reveal">
+      <p class="section-label">Recognition</p>
+      <h2 class="section-title">荣誉与认证</h2>
+    </div>
+    <div class="awards-grid">
+      <div class="award-item reveal">
+        <div class="award-icon">✦</div>
+        <div class="award-year">资质认证</div>
+        <div class="award-title">ICDA 高级<br>室内建筑师</div>
+        <div class="award-org">中国建筑装饰协会</div>
+      </div>
+      <div class="award-item reveal">
+        <div class="award-icon">◈</div>
+        <div class="award-year">行业会员</div>
+        <div class="award-title">中国建筑学会<br>会员</div>
+        <div class="award-org">China Architecture Association</div>
+      </div>
+      <div class="award-item reveal">
+        <div class="award-icon">⬡</div>
+        <div class="award-year">行业会员</div>
+        <div class="award-title">中国装饰协会<br>会员</div>
+        <div class="award-org">China Decoration Association</div>
+      </div>
+      <div class="award-item reveal">
+        <div class="award-icon">◇</div>
+        <div class="award-year">品牌荣誉</div>
+        <div class="award-title">100% Client<br>Satisfaction</div>
+        <div class="award-org">15+ Years · 120+ Projects</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- News -->
+  <section id="news">
+    <div class="reveal">
+      <p class="section-label">Latest</p>
+      <h2 class="section-title">动态资讯</h2>
+    </div>
+    <div class="news-grid">
+      <div class="news-card reveal">
+        <div class="news-img">
+          <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=600&q=80" alt="News 1" />
+        </div>
+        <div class="news-cat">Design Insight</div>
+        <div class="news-title">商业空间中的情绪设计——如何让顾客"流连忘返"</div>
+        <div class="news-divider"></div>
+        <div class="news-date">April 2026</div>
+      </div>
+      <div class="news-card reveal">
+        <div class="news-img">
+          <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80" alt="News 2" />
+        </div>
+        <div class="news-cat">Project Reveal</div>
+        <div class="news-title">谷奈斯 × 来福士广场：一次关于光与影的对话</div>
+        <div class="news-divider"></div>
+        <div class="news-date">March 2026</div>
+      </div>
+      <div class="news-card reveal">
+        <div class="news-img">
+          <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80" alt="News 3" />
+        </div>
+        <div class="news-cat">Brand Story</div>
+        <div class="news-title">从施工图深化到品牌空间顾问——谷奈斯的进化之路</div>
+        <div class="news-divider"></div>
+        <div class="news-date">February 2026</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact & Footer -->
+  <section id="contact">
+    <div class="contact-inner">
+      <div class="reveal">
+        <p class="section-label">Get In Touch</p>
+        <h2 class="contact-title">让我们<br>开始一段<br>对话</h2>
+        <p class="contact-subtitle">
+          无论您有新项目想法，还是希望深入了解我们的设计理念，<br>
+          我们随时期待与您的连接。
+        </p>
+        <a href="mailto:eric@gunais.com" class="btn-primary">eric@gunais.com</a>
+        <div class="contact-offices">
+          <div class="office-item">
+            <div>
+              <div class="office-city">Shanghai · 上海</div>
+              <div class="office-address">宝山区沪太路6395号1-2层</div>
+            </div>
+            <div class="office-dot"></div>
+          </div>
+          <div class="office-item">
+            <div>
+              <div class="office-city">Website</div>
+              <div class="office-address">www.gunais.com</div>
+            </div>
+            <div class="office-dot" style="opacity:0.4"></div>
+          </div>
+          <div class="office-item">
+            <div>
+              <div class="office-city">Social Media</div>
+              <div class="office-address">抖音 / 视频号：@设计师邵阳「GUNAIS」</div>
+            </div>
+            <div class="office-dot" style="opacity:0.4"></div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal">
+        <form class="contact-form" onsubmit="return false;">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Your Name</label>
+              <input type="text" placeholder="姓名" />
+            </div>
+            <div class="form-group">
+              <label>Company</label>
+              <input type="text" placeholder="公司名称" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" placeholder="邮箱地址" />
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="tel" placeholder="联系电话" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Project Type</label>
+            <select>
+              <option value="">请选择项目类型</option>
+              <option>商业空间设计</option>
+              <option>办公空间设计</option>
+              <option>酒店会展设计</option>
+              <option>施工图深化</option>
+              <option>EPC设计管理</option>
+              <option>品牌空间顾问</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Message</label>
+            <textarea placeholder="请简要描述您的项目需求或想法……"></textarea>
+          </div>
+          <div class="form-submit">
+            <button class="btn-primary" type="submit" style="width:100%;cursor:none;">Send Message</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <div class="footer-logo">GUNAIS<span>·</span> 谷奈斯空间设计</div>
+      <ul class="footer-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#portfolio">Portfolio</a></li>
+        <li><a href="#news">News</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="footer-copy">© 2024–2026 Gunais Design. All rights reserved.</div>
+    </div>
+  </section>
+
+  <script>
+    // ── Custom Cursor ──
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mouseX = 0, mouseY = 0;
+    let ringX = 0, ringY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX; mouseY = e.clientY;
+      cursor.style.left = mouseX + 'px';
+      cursor.style.top = mouseY + 'px';
+    });
+
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.12;
+      ringY += (mouseY - ringY) * 0.12;
+      ring.style.left = ringX + 'px';
+      ring.style.top = ringY + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    document.querySelectorAll('a, button, .service-card, .portfolio-item, .news-card').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'translate(-50%, -50%) scale(2.5)';
+        ring.style.transform = 'translate(-50%, -50%) scale(1.6)';
+        ring.style.borderColor = 'rgba(201,169,110,0.8)';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+        ring.style.transform = 'translate(-50%, -50%) scale(1)';
+        ring.style.borderColor = 'rgba(201,169,110,0.5)';
+      });
+    });
+
+    // ── Scroll Nav ──
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // ── Reveal on Scroll ──
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+
+    // ── Portfolio Filter ──
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    // ── Animated Counter ──
+    function animateCounter(el, target, suffix='') {
+      let start = 0;
+      const duration = 1600;
+      const step = target / (duration / 16);
+      const timer = setInterval(() => {
+        start = Math.min(start + step, target);
+        el.textContent = Math.floor(start) + suffix;
+        if (start >= target) clearInterval(timer);
+      }, 16);
+    }
+
+    const statsObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('.about-stat-num').forEach(num => {
+            const text = num.textContent;
+            const match = text.match(/(\d+)/);
+            if (match) {
+              const val = parseInt(match[1]);
+              const suffix = text.includes('%') ? '<span style="font-size:18px;color:var(--gold)">%</span>' : '<span style="font-size:18px;color:var(--gold)">+</span>';
+              let count = 0;
+              const timer = setInterval(() => {
+                count = Math.min(count + Math.ceil(val / 80), val);
+                num.innerHTML = count + suffix;
+                if (count >= val) clearInterval(timer);
+              }, 20);
+            }
+          });
+          statsObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.about-stats-row').forEach(el => statsObs.observe(el));
+
+    // ── Smooth scroll for nav links ──
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
