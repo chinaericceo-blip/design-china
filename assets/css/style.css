@@ -122,7 +122,7 @@ p{color:#666}
   padding-top:60px
 }
 .home-minimal .hm-logo{
-  font-size:clamp(2.8rem,7vw,5.2rem);font-weight:800;letter-spacing:-.03em;
+  font-size:clamp(2rem,5vw,3.6rem);font-weight:800;letter-spacing:-.03em;
   color:#0d0d0d;line-height:1;margin-bottom:48px;display:flex;align-items:center;gap:4px
 }
 .home-minimal .hm-logo .hm-dot{color:#e60012;margin:0 -2px}
